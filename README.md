@@ -1,1 +1,1 @@
-# Projeto de criação de pipelines docekr com a utilização do Jenkins.
+# Projeto de criação de pipelines docker com a utilização do Jenkins.
