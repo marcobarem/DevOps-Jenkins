@@ -1,0 +1,34 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/marcobarem/DevOps-Jenkins.git'
+            }
+        }
+        stage('Clean Up') {
+            steps {
+                script {
+                    sh 'docker rm -f mariadb || true'
+                    sh 'docker rm -f phpmyadmin || true'
+                    sh 'docker network prune -f'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('mariadb-phpmyadmin') {
+                    sh 'docker-compose down'
+                    sh 'docker-compose build'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('mariadb-phpmyadmin') {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+    }
+}
