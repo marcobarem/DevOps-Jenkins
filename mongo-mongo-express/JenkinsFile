@@ -1,0 +1,33 @@
+pipeline {
+    agent any
+    stages {
+        stage('Checkout') {
+            steps {
+                git branch: 'main', url: 'https://github.com/marcobarem/DevOps-Jenkins.git'
+            }
+        }
+        stage('Clean Up') {
+            steps {
+                script {
+                    sh 'docker rm -f mongodb || true'
+                    sh 'docker rm -f mongo-express || true'
+                }
+            }
+        }
+        stage('Build') {
+            steps {
+                dir('mongo-mongo-express') {
+                    sh 'docker-compose down'
+                    sh 'docker-compose build'
+                }
+            }
+        }
+        stage('Deploy') {
+            steps {
+                dir('mongo-mongo-express') {
+                    sh 'docker-compose up -d'
+                }
+            }
+        }
+    }
+}
